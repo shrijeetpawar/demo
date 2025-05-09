@@ -1,79 +1,90 @@
-# demo
+# DEMO
 
 # Indian Bank Branch GraphQL API
 
-This project is a Django-based GraphQL API that serves bank branch data from a PostgreSQL database. It fulfills the requirements of the assignment and is built using scalable, production-ready practices with a SaaS-style clean architecture.
-
-## Tech Stack
-
-- Python 3.10+
-- Django 5.x
-- Graphene-Django (GraphQL)
-- PostgreSQL
-- Docker-ready (optional for deployment)
-- Tested on Windows
-
-## Features
-
-- ✅ GraphQL endpoint at `/gql`
-- ✅ Query to get bank branches with nested bank details
-- ✅ Uses real RBI data (via `indian_banks.sql`)
-- ✅ Clean codebase following Django best practices
-- ✅ Basic unit test for GraphQL queries
-- ✅ UTF-8 safe PostgreSQL data handling
+This is a Django + GraphQL API that serves real-time Indian bank branch data using a PostgreSQL backend. The project uses real BANK IFSC data and is designed for evaluation under the assignment. It is also fully deployable on **Render.com** (free, no card required).
 
 ---
 
-##  Getting Started
+## 🔧 Tech Stack
 
-###  Prerequisites
+- **Backend**: Django 5 + Graphene-Django (GraphQL)
+- **Database**: PostgreSQL (local and cloud-ready)
+- **Deployment**: Render.com (free) or heroku (payment verification)
+- **Server**: Gunicorn + WhiteNoise
 
-- PostgreSQL (configured with a database named `bankdb`)
-- Python 3.10+
-- Virtualenv (recommended)
+---
 
-### 📥 Install & Run Locally
+## 🌐 Live Demo (after deployment)
+
+```
+https://your-app-name.onrender.com/gql
+```
+
+---
+
+## 📂 Features
+
+- GraphQL endpoint at `/gql`
+- Query all branches with nested bank details
+- Optimized with `select_related` for performance
+- Test case included
+- Fully configured for Render deployment
+
+---
+
+## 🛠️ Local Setup Instructions
+
+### 1. Clone the repo
 
 ```bash
 git clone https://github.com/shrijeetpawar/demo.git
 cd demo
+```
 
+### 2. Create virtual environment
+
+```bash
 python -m venv venv
-source venv/bin/activate  # (Windows: venv\Scripts\activate)
+venv\Scripts\activate   # Windows
+source venv/bin/activate  # Mac/Linux
+```
 
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-🛠️ Configure PostgreSQL (if not already)
+### 4. Import PostgreSQL Data
 
-    Create the database:
+Use the RBI dataset from `indian_banks.sql`. Fix encoding using:
 
-CREATE DATABASE bankdb WITH ENCODING='UTF8';
+```bash
+set PGCLIENTENCODING=WIN1252 && psql -U postgres -d bankdb -f indian_banks.sql
+```
 
-Import cleaned SQL data:
+Update `settings.py`:
 
-psql -U postgres -d bankdb -f indian_banks.sql
+```python
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'bankdb',
+    'USER': 'postgres',
+    'PASSWORD': 'yourpassword',
+    'HOST': 'localhost',
+    'PORT': '5432',
+  }
+}
+```
 
-In config/settings.py, set:
+---
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'bankdb',
-            'USER': 'postgres',
-            'PASSWORD': 'yourpassword',
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
-    }
+## 🔍 Sample GraphQL Query
 
-🚀 Start the Server
-
-python manage.py runserver
-
-Visit: http://localhost:8000/gql
-🔍 Sample GraphQL Query
-
-query {
+```graphql
+{
   branches {
     ifsc
     branch
@@ -82,41 +93,59 @@ query {
     }
   }
 }
+```
 
-🧪 Run Tests
+---
 
+## ✅ Test the API
+
+```bash
 python manage.py test
+```
 
-Includes:
+---
 
-    GraphQL test that checks correct branch query resolution
+## ☁️ Deploy on Render (No Credit Card Needed)
 
-☁️ Deployment Ready
+1. Push code to GitHub
+2. Go to [render.com](https://render.com) → New Web Service → Connect repo
+3. Start command:
+   ```
+   gunicorn config.wsgi
+   ```
+4. Add environment variables:
+   - `DATABASE_URL` → from Render’s DB
+5. In Shell: `python manage.py migrate`
 
-You can deploy this on:
+---
 
-    Heroku
+## 📄 Method Used to Solve the Assignment
 
-    Render
+- **Data Source**: Used `indian_banks.sql` from GitHub
+- **Encoding Fix**: Used `PGCLIENTENCODING=WIN1252` for Windows-encoded data
+- **Model Setup**: Django models for `banks` and `branches`, marked `managed = False`
+- **Schema**: GraphQL schema using `graphene-django`, with nested bank branch querying
+- **Optimizations**: `select_related` used to prevent N+1 queries
+- **Testing**: Unit test with mocked data using `schema_editor`
+- **Deployment**: Fully configured `requirements.txt`, `Procfile`, and `runtime.txt`
+- **Hosting**: Free Render deployment without payment setup
 
-    Dockerized environments
+---
 
-Includes:
+## ⏱ Time Taken
 
-    Procfile
+| Task                         | Time     |
+|------------------------------|----------|
+| Data prep & encoding fix     | 2.5 hrs  |
+| Django + GraphQL setup       | 2 hrs    |
+| Testing + Validation         | 1 hr     |
+| Deployment (Render)          | 2.5 hrs  |
+| **Total**                    | **8 hrs**|
 
-    requirements.txt
+---
 
-    UTF-8 data handling
+## 🙋 Author
 
-⏱ Time Taken
+- Name: **Shrijeet Pawar**
+- GitHub: [@shrijeetpawar](https://github.com/shrijeetpawar)
 
-    6 hours total:
-
-        2 hours: DB setup and encoding fixes
-
-        2 hours: Django + GraphQL setup
-
-        1 hour: Test cases and validation
-
-        1 hour: Docs, cleanup, and polish
