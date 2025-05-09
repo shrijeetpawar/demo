@@ -16,6 +16,6 @@ class Query(graphene.ObjectType):
     branches = graphene.List(BranchType)
 
     def resolve_branches(root, info):
-        return Branch.objects.select_related("bank").all()[:100]
+        return Branch.objects.select_related("bank").all()
 
 schema = graphene.Schema(query=Query)
