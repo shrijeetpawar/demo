@@ -35,7 +35,7 @@ This project is a Django-based GraphQL API that serves bank branch data from a P
 ### 📥 Install & Run Locally
 
 ```bash
-git clone https://github.com/yourusername/demo.git
+git clone https://github.com/shrijeetpawar/demo.git
 cd demo
 
 python -m venv venv
