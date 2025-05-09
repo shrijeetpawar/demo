@@ -18,7 +18,7 @@ This is a Django + GraphQL API that serves real-time Indian bank branch data usi
 ## 🌐 Live Demo (after deployment)
 
 ```
-https://your-app-name.onrender.com/gql
+https://demo-2glo.onrender.com/gql
 ```
 
 ---
