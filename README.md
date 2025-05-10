@@ -145,6 +145,14 @@ python manage.py test
 
 ---
 
+## Output
+
+![Output](assets/output.png)
+
+
+
+
+
 ## 🙋 Author
 
 - Name: **Shrijeet Pawar**
