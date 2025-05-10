@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # DEMO
 
 # Indian Bank Branch GraphQL API
@@ -149,3 +150,6 @@ python manage.py test
 - Name: **Shrijeet Pawar**
 - GitHub: [@shrijeetpawar](https://github.com/shrijeetpawar)
 
+=======
+# demo
+>>>>>>> parent of 037c296 (Update README.md)

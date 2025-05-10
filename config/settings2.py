@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import django_heroku
+import dj_database_url
+from dotenv import load_dotenv
+load_dotenv() 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -73,22 +78,91 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
+
+
+# DATABASE_URL = 'postgres://postgres:shri@localhost:5432/bankdb?options=--client_encoding%3DWIN1252'
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=DATABASE_URL,
+#         conn_max_age=600
+#     )
+# }
+
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# File: config/settings.py
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'bankdb',
+#         'USER': 'postgres',
+#         'PASSWORD': 'shri',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#         'OPTIONS': {
+#             'options': '-c client_encoding=WIN1252'  # 🔑 Key fix
+#         }
+#     }
+# }
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bankdb',
-        'USER': 'postgres',
-        'PASSWORD': 'shri',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'OPTIONS': {
-            'client_encoding': 'WIN1252'  # ✅ This ensures Django uses WIN1252
-        }
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),  # 🔑 Use environment variable
+        conn_max_age=600
+    )
 }
+
+
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default='postgres://postgres:shri@localhost:5432/bankdb',
+#         conn_max_age=600
+#     )
+# }
+
+# # Inject OPTIONS manually (since dj_database_url returns a dict)
+# DATABASES['default']['OPTIONS'] = {
+#     'client_encoding': 'WIN1252'
+# }# No code was selected, so we'll add a new section to improve the existing code.
+
+# Add a new section to handle logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'logs/django.log',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
 
 GRAPHENE = {
     'SCHEMA': 'banks.schema.schema'
@@ -138,3 +212,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
